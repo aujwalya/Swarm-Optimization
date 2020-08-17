@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.accenture.swarmPSO.bean.GlobalSolution;
+import com.accenture.swarmPSO.bean.GlobalSolutionNew;
 import com.accenture.swarmPSO.bean.Particle;
 import com.accenture.swarmPSO.bean.Swarm;
 import com.accenture.swarmPSO.bean.SwarmNew;
@@ -56,7 +57,7 @@ public class SwarmController {
 	
 	//2nd API
 	@RequestMapping(value="/calculateGlobalBestSolutionNew",method= {RequestMethod.GET, RequestMethod.POST},produces="application/json")
-	public GlobalSolution calculateGlobalBestSolutionNew(@RequestBody SwarmNew swarm) {
+	public GlobalSolutionNew calculateGlobalBestSolutionNew(@RequestBody SwarmNew swarm) {
 		return swarmService.calculateGlobalBestSolutionNew(swarm.getParticles(), swarm.getRoomId());
 	}
 	

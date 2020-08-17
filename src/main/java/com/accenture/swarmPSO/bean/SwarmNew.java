@@ -115,12 +115,11 @@ public class SwarmNew {
     	Vector GlobalResultant;
     	Vector v;
     	GlobalResultant = new Vector(0, 0);
-    	v = new Vector(0,0);
     	
         for (Particle p : particles) {
         	magx = p.getPosition().getX() - bestPosition.getX();
         	magy = p.getPosition().getY() - bestPosition.getY();
-        	
+        	v = new Vector(0,0);
         	
         	if (magx>0) {
         		if (magy>0)
@@ -179,6 +178,7 @@ public class SwarmNew {
         for (Particle p : particles) {
         	magx = p.getPosition().getX() - bestPosition.getX();
         	magy = p.getPosition().getY() - bestPosition.getY();
+        	v = new Vector(0,0);
         	
         	if (magx>0) {
         		if (magy>0)

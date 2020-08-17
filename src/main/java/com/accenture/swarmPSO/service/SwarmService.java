@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.accenture.swarmPSO.bean.GlobalSolution;
+import com.accenture.swarmPSO.bean.GlobalSolutionNew;
 import com.accenture.swarmPSO.bean.Particle;
 import com.accenture.swarmPSO.bean.ParticleResponse;
+import com.accenture.swarmPSO.bean.ParticleResponseNew;
 import com.accenture.swarmPSO.bean.Swarm;
 import com.accenture.swarmPSO.bean.SwarmNew;
 import com.accenture.swarmPSO.bean.Vector;
@@ -26,6 +28,7 @@ public class SwarmService implements ISwarmService{
 	IParticleSwarmRepository particleSwarmDAO;
 	
 	GlobalSolution globalSolution = new GlobalSolution();
+	GlobalSolutionNew globalSolutionNew = new GlobalSolutionNew();
 	
 	private void updateGlobalBestOption(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolution globalSolution) {
 		double bestOptionDistance = 0.0;
@@ -111,22 +114,18 @@ public class SwarmService implements ISwarmService{
 	}
 	
 	@Override
-	public GlobalSolution calculateGlobalBestSolutionNew(List<Particle> particles, int roomId) {
+	public GlobalSolutionNew calculateGlobalBestSolutionNew(List<Particle> particles, int roomId) {
 		SwarmNew swarmnew = particleSwarmDAO.fetchLoadedSwarmNewData(roomId);
 		if(swarmnew == null)
-			return new GlobalSolution();
+			return new GlobalSolutionNew();
 		
 		List<Particle> storedParticlesData = swarmnew.getParticles();
 		
 		//Update current Position of stored particle data with UI posted data
 		particles.stream().forEach(uiParticleItem ->
 			storedParticlesData.stream().filter(storedParticleItem -> storedParticleItem.getParticleId().equalsIgnoreCase(uiParticleItem.getParticleId()))
-					.forEach(storedParticleItem -> storedParticleItem.setPosition(uiParticleItem.getPosition())));
-		
-		
-		
-		
-		
+					.forEach(storedParticleItem -> storedParticleItem.setPosition(uiParticleItem.getPosition())));			
+			
 		//Calculate global Best with PSO Algorithm
 		swarmNewServices.onCalculate(storedParticlesData, swarmnew);
 		
@@ -138,21 +137,33 @@ public class SwarmService implements ISwarmService{
 		particleSwarmDAO.updateSwarmDataAfterCalculationNew(swarmnew, roomId);
 		
 		//List of particles current position to return to UI
-		List<ParticleResponse> calculatedParticleList = new ArrayList<>();
+		List<ParticleResponseNew> calculatedParticleList = new ArrayList<>();
 		storedParticlesData.stream().forEach(item -> {
-			ParticleResponse calculatedParticle = new ParticleResponse(); 
+			ParticleResponseNew calculatedParticle = new ParticleResponseNew(); 
 			calculatedParticle.setParticleId(item.getParticleId());
 			calculatedParticle.setPosition(roundOffVector(item.getPosition()));
-			calculatedParticle.setBestPosition(roundOffVector(item.getBestPosition()));
 			calculatedParticleList.add(calculatedParticle);
 		});
 		
 		//Creating Global Solution to return it to UI
-		globalSolution.setParticles(calculatedParticleList);
-		globalSolution.setGlobalBestPosition(roundOffVector(swarmnew.getBestPosition()));
-		updateGlobalBestOption(swarmnew.getOptionVertices(), swarmnew.getBestPosition(), globalSolution);
+		globalSolutionNew.setParticles(calculatedParticleList);
+		globalSolutionNew.setGlobalBestPosition(roundOffVector(swarmnew.getBestPosition()));
+		updateGlobalBestOption(swarmnew.getOptionVertices(), swarmnew.getBestPosition(), globalSolutionNew);
 		
-		return globalSolution;
+		return globalSolutionNew;
+	}
+	
+	private void updateGlobalBestOption(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolutionNew globalSolutionNew) {
+		double bestOptionDistance = 0.0;
+		for(Vector option:optionVertices) {
+			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
+					+ Math.pow(option.getY() - globalBestPosition.getY(), 2));
+			if((currentOptionDistance < bestOptionDistance) || bestOptionDistance == 0.0) {
+				bestOptionDistance = currentOptionDistance;
+				globalSolutionNew.setGlobalBestOption(option);
+			}
+				
+		}
 	}
 
 }
