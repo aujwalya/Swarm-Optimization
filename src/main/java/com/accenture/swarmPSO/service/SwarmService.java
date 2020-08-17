@@ -1,5 +1,7 @@
 package com.accenture.swarmPSO.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import com.accenture.swarmPSO.bean.GlobalSolution;
 import com.accenture.swarmPSO.bean.Particle;
 import com.accenture.swarmPSO.bean.ParticleResponse;
 import com.accenture.swarmPSO.bean.Swarm;
+import com.accenture.swarmPSO.bean.SwarmNew;
 import com.accenture.swarmPSO.bean.Vector;
 import com.accenture.swarmPSO.repository.IParticleSwarmRepository;
 
@@ -17,6 +20,7 @@ import com.accenture.swarmPSO.repository.IParticleSwarmRepository;
 public class SwarmService implements ISwarmService{
 
 	Swarm swarmServices = new Swarm();
+	SwarmNew swarmNewServices = new SwarmNew();
 	
 	@Autowired
 	IParticleSwarmRepository particleSwarmDAO;
@@ -75,15 +79,78 @@ public class SwarmService implements ISwarmService{
 		storedParticlesData.stream().forEach(item -> {
 			ParticleResponse calculatedParticle = new ParticleResponse(); 
 			calculatedParticle.setParticleId(item.getParticleId());
-			calculatedParticle.setPosition(item.getPosition());
-			calculatedParticle.setBestPosition(item.getBestPosition());
+			calculatedParticle.setPosition(roundOffVector(item.getPosition()));
+			calculatedParticle.setBestPosition(roundOffVector(item.getBestPosition()));
 			calculatedParticleList.add(calculatedParticle);
 		});
 		
 		//Creating Global Solution to return it to UI
 		globalSolution.setParticles(calculatedParticleList);
-		globalSolution.setGlobalBestPosition(swarm.getBestPosition());
+		globalSolution.setGlobalBestPosition(roundOffVector(swarm.getBestPosition()));
 		updateGlobalBestOption(swarm.getOptionVertices(), swarm.getBestPosition(), globalSolution);
+		
+		return globalSolution;
+	} 
+	
+	public Vector roundOffVector(Vector vector) {
+		double x = BigDecimal.valueOf(vector.getX()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		double y = BigDecimal.valueOf(vector.getY()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		vector.setX(x);
+		vector.setY(y);
+		return vector;
+	}
+	
+	@Override
+	public void loadSwarmNewData(SwarmNew swarm) {
+		swarmNewServices.initialize(swarm.getParticles(), swarm);
+		particleSwarmDAO.loadSwarmNewData(swarm);	
+	}
+
+	public SwarmNew fetchLoadedSwarmNewData(int roomId) {
+		return particleSwarmDAO.fetchLoadedSwarmNewData(roomId);
+	}
+	
+	@Override
+	public GlobalSolution calculateGlobalBestSolutionNew(List<Particle> particles, int roomId) {
+		SwarmNew swarmnew = particleSwarmDAO.fetchLoadedSwarmNewData(roomId);
+		if(swarmnew == null)
+			return new GlobalSolution();
+		
+		List<Particle> storedParticlesData = swarmnew.getParticles();
+		
+		//Update current Position of stored particle data with UI posted data
+		particles.stream().forEach(uiParticleItem ->
+			storedParticlesData.stream().filter(storedParticleItem -> storedParticleItem.getParticleId().equalsIgnoreCase(uiParticleItem.getParticleId()))
+					.forEach(storedParticleItem -> storedParticleItem.setPosition(uiParticleItem.getPosition())));
+		
+		
+		
+		
+		
+		//Calculate global Best with PSO Algorithm
+		swarmNewServices.onCalculate(storedParticlesData, swarmnew);
+		
+		//Set updated particles data for API end caching 
+		//which will be needed for next time calculation
+		swarmnew.setParticles(storedParticlesData);
+		
+		//Store the updated Swarm data at API end in Java cache
+		particleSwarmDAO.updateSwarmDataAfterCalculationNew(swarmnew, roomId);
+		
+		//List of particles current position to return to UI
+		List<ParticleResponse> calculatedParticleList = new ArrayList<>();
+		storedParticlesData.stream().forEach(item -> {
+			ParticleResponse calculatedParticle = new ParticleResponse(); 
+			calculatedParticle.setParticleId(item.getParticleId());
+			calculatedParticle.setPosition(roundOffVector(item.getPosition()));
+			calculatedParticle.setBestPosition(roundOffVector(item.getBestPosition()));
+			calculatedParticleList.add(calculatedParticle);
+		});
+		
+		//Creating Global Solution to return it to UI
+		globalSolution.setParticles(calculatedParticleList);
+		globalSolution.setGlobalBestPosition(roundOffVector(swarmnew.getBestPosition()));
+		updateGlobalBestOption(swarmnew.getOptionVertices(), swarmnew.getBestPosition(), globalSolution);
 		
 		return globalSolution;
 	}

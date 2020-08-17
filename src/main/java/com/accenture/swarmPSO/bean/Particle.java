@@ -1,5 +1,7 @@
 package com.accenture.swarmPSO.bean;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 public class Particle {
@@ -129,11 +131,12 @@ public class Particle {
         this.velocity = velocity.clone();
     }
 
-    //Using Ackley's function
+    //Using three hump function
 	private double eval (double x, double y) {
-        double p1 = -20*Math.exp(-0.2*Math.sqrt(0.5*((x*x)+(y*y))));
-        double p2 = Math.exp(0.5*(Math.cos(2*Math.PI*x)+Math.cos(2*Math.PI*y)));
-        return p1 - p2 + Math.E + 20;
+        double p1 = 2*x*x;
+        double p2 = 1.05*Math.pow(x, 4);
+        double p3 = Math.pow(x, 6) / 6;
+        return p1 - p2 + p3 + x*y + y*y;
     }
 
 	@Override

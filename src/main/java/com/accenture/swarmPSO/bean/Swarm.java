@@ -145,7 +145,8 @@ public class Swarm {
                 swarm.setOldEval(swarm.getBestEval());
             }
 
-            for(int epoch = 1; epoch < 50; epoch++) {
+
+
             for (Particle p : particles) {
                 p.updatePersonalBest();
                 updateGlobalBest(p, swarm);
@@ -155,8 +156,8 @@ public class Swarm {
                 updateVelocity(p);
                 p.updatePosition();
             }
-            System.out.println("Gbest value for the Epoch number" +epoch +"is :" +swarm.getBestPosition());
-            }
+            //System.out.println("Gbest value for the Epoch number" +epoch +"is :" +swarm.getBestPosition());
+            
 
     }
 
