@@ -141,12 +141,21 @@ public class SwarmService implements ISwarmService{
 		storedParticlesData.stream().forEach(item -> {
 			ParticleResponseNew calculatedParticle = new ParticleResponseNew(); 
 			calculatedParticle.setParticleId(item.getParticleId());
-			calculatedParticle.setPosition(roundOffVector(item.getPosition()));
+			calculatedParticle.setPosition(item.getPosition());
+			
+			System.out.println("Particle Id" + item.getParticleId());
+			System.out.println("Particle Id X" + item.getPosition().getX() + "--" +calculatedParticle.getPosition().getX()  );
+			System.out.println("Particle Id Y" + item.getPosition().getY() + "--" +calculatedParticle.getPosition().getY()  );
+			
 			calculatedParticleList.add(calculatedParticle);
 		});
 		
 		//Creating Global Solution to return it to UI
 		globalSolutionNew.setParticles(calculatedParticleList);
+		
+		System.out.println("Best Position X" + swarmnew.getBestPosition().getX());
+		System.out.println("Best Position Y" + swarmnew.getBestPosition().getY());
+		
 		globalSolutionNew.setGlobalBestPosition(roundOffVector(swarmnew.getBestPosition()));
 		updateGlobalBestOption(swarmnew.getOptionVertices(), swarmnew.getBestPosition(), globalSolutionNew);
 		

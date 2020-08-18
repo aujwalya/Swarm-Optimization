@@ -110,16 +110,24 @@ public class SwarmNew {
     	double standardvelocity = 5;
     	double magx;
     	double magy;
-    	
-    	
     	Vector GlobalResultant;
-    	Vector v;
+    		
+    	
     	GlobalResultant = new Vector(0, 0);
     	
+    	System.out.println("Initial bestPosition X::" + bestPosition.getX());
+    	System.out.println("Initial bestPosition Y::" + bestPosition.getY());
+    	
         for (Particle p : particles) {
+        	
+        	Vector v = new Vector(0,0);
+        	
         	magx = p.getPosition().getX() - bestPosition.getX();
         	magy = p.getPosition().getY() - bestPosition.getY();
-        	v = new Vector(0,0);
+        	
+        	System.out.println("Particle:" + p.getParticleId());
+        	System.out.println("magx:" + magx);
+        	System.out.println("magy:" + magy);
         	
         	if (magx>0) {
         		if (magy>0)
@@ -169,95 +177,90 @@ public class SwarmNew {
         		}
         	}
         	
-        	
+        	System.out.println("GlobalResultant X::" + GlobalResultant.getX());
+        	System.out.println("GlobalResultant Y::" + GlobalResultant.getY());
         }
         
         bestPosition.add(GlobalResultant);
+        swarm.setBestPosition(bestPosition);
+        
+        System.out.println("bestPosition X::" + bestPosition.getX());
+    	System.out.println("bestPosition Y::" + bestPosition.getY());
         
         //update particle position
-        for (Particle p : particles) {
-        	magx = p.getPosition().getX() - bestPosition.getX();
-        	magy = p.getPosition().getY() - bestPosition.getY();
-        	v = new Vector(0,0);
+        
+        
+    	particles.stream().forEach(item -> {
         	
-        	if (magx>0) {
-        		if (magy>0)
+    		Vector v = new Vector (0,0);		
+        	double itemmagx = item.getPosition().getX() - bestPosition.getX();
+        	double itemmagy = item.getPosition().getY() - bestPosition.getY();
+        	
+        	if (itemmagx>0) {
+        		if (itemmagy>0)
         		{
-        			v.setX(bestPosition.getX()+((magx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()+((magy/100)*standardvelocity));
-        			p.setPosition(v);         			        			       			        			
+        			v.setX(bestPosition.getX()+((itemmagx/100)*standardvelocity));
+        			v.setY(bestPosition.getY()+((itemmagy/100)*standardvelocity));        			        			        			       			        			
         		}
-        		else if (magy<0) {
-        			v.setX(bestPosition.getX()+((magx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()-((magy/100)*standardvelocity));
-        			p.setPosition(v);        			       			
+        		else if (itemmagy<0) {
+        			v.setX(bestPosition.getX()+((itemmagx/100)*standardvelocity));
+        			v.setY(bestPosition.getY()-((itemmagy/100)*standardvelocity));        			        			       			
         		}
-        		else if (magy==0) {
-        			v.setX(bestPosition.getX()+((magx/100)*standardvelocity));
-        			v.setY(bestPosition.getY());
-        			p.setPosition(v);        			
+        		else if (itemmagy==0) {
+        			v.setX(bestPosition.getX()+((itemmagx/100)*standardvelocity));
+        			v.setY(bestPosition.getY());		
         		}
         		
         	}
-        	else if (magx<0) {
-        		if (magy>0)
+        	else if (itemmagx<0) {
+        		if (itemmagy>0)
         		{
-        			v.setX(bestPosition.getX()-((magx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()+((magy/100)*standardvelocity));
-        			p.setPosition(v);
+        			v.setX(bestPosition.getX()-((itemmagx/100)*standardvelocity));
+        			v.setY(bestPosition.getY()+((itemmagy/100)*standardvelocity));
+        		
         		}
-        		else if (magy<0) {
-        			v.setX(bestPosition.getX()-((magx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()-((magy/100)*standardvelocity));
-        			p.setPosition(v);
+        		else if (itemmagy<0) {
+        			v.setX(bestPosition.getX()-((itemmagx/100)*standardvelocity));
+        			v.setY(bestPosition.getY()-((itemmagy/100)*standardvelocity));
+        		
         		}
-        		else if (magy==0) {
-        			v.setX(bestPosition.getX()-((magx/100)*standardvelocity));
+        		else if (itemmagy==0) {
+        			v.setX(bestPosition.getX()-((itemmagx/100)*standardvelocity));
         			v.setY(bestPosition.getY());
-        			p.setPosition(v);
+        		
         		}        			
         	}
-        	else if (magx==0){
-        		if (magy>0)
+        	else if (itemmagx==0){
+        		if (itemmagy>0)
         		{
         			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY()+((magy/100)*standardvelocity));
-        			p.setPosition(v);
+        			v.setY(bestPosition.getY()+((itemmagy/100)*standardvelocity));
+        		
         		}
-        		else if (magy<0) {
+        		else if (itemmagy<0) {
         			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY()-((magy/100)*standardvelocity));
-        			p.setPosition(v);
+        			v.setY(bestPosition.getY()-((itemmagy/100)*standardvelocity));
+        		
         		}
-        		else if (magy==0) {
+        		else if (itemmagy==0) {
         			v.setX(bestPosition.getX());
         			v.setY(bestPosition.getY());
-        			p.setPosition(v);
+        			
         		}        		
         		        		
         	}
         	
-        }
+        	item.setPosition(v);
+        	
+        	System.out.println("Particle Id:" + item.getParticleId());
+        	System.out.println("Upated particle position X:" + item.getPosition().getX());
+        	System.out.println("Upated particle position Y" + item.getPosition().getY());
+        	        	
+        });
         
+        swarm.setParticles(particles);
         
-        /*
-            if (swarm.getBestEval() < swarm.getOldEval()) {
-                swarm.setOldEval(swarm.getBestEval());
-            }
-
-            for(int epoch = 1; epoch < 50; epoch++) {
-            for (Particle p : particles) {
-                p.updatePersonalBest();
-                updateGlobalBest(p, swarm);
-            }
-
-            for (Particle p : particles) {
-                p.updatePosition();
-            }
-            System.out.println("Gbest value for the Epoch number" +epoch +"is :" +swarm.getBestPosition());
-            }
-		*/
-    }
+       }
 
     /**
      * Create a set of particles, each with random starting positions.
@@ -268,8 +271,11 @@ public class SwarmNew {
         for (int i = 0; i < numberOfParticles; i++) {
             Particle particle = new Particle(beginRange, endRange, particles.get(i).getParticleId());
             particles.set(i, particle);
-            updateGlobalBest(particle);
+            //updateGlobalBest(particle);           
+            
         }
+        bestPosition.set(310, 325);
+        
         swarm.setOldEval(swarm.getBestEval());    
     }
 
