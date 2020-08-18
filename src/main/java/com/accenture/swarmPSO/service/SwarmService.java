@@ -170,8 +170,7 @@ public class SwarmService implements ISwarmService{
 			if((currentOptionDistance < bestOptionDistance) || bestOptionDistance == 0.0) {
 				bestOptionDistance = currentOptionDistance;
 				globalSolutionNew.setGlobalBestOption(option);
-			}
-				
+			}				
 		}
 	}
 
