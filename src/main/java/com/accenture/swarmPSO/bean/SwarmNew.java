@@ -3,6 +3,9 @@ package com.accenture.swarmPSO.bean;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class SwarmNew {
 
 	private int roomId;

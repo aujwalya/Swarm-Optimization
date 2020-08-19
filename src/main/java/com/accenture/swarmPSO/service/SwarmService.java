@@ -21,8 +21,11 @@ import com.accenture.swarmPSO.repository.IParticleSwarmRepository;
 @Service
 public class SwarmService implements ISwarmService{
 
-	Swarm swarmServices = new Swarm();
-	SwarmNew swarmNewServices = new SwarmNew();
+	@Autowired
+	Swarm swarmServices;
+	
+	@Autowired
+	SwarmNew swarmNewServices;
 	
 	@Autowired
 	IParticleSwarmRepository particleSwarmDAO;
