@@ -202,15 +202,15 @@ public class SwarmNew {
         	if (itemmagx>0) {
         		if (itemmagy>0)
         		{
-        			v.setX(bestPosition.getX()+((itemmagx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()+((itemmagy/100)*standardvelocity));        			        			        			       			        			
+        			v.setX(bestPosition.getX()+((itemmagx/5)*standardvelocity));
+        			v.setY(bestPosition.getY()+((itemmagy/5)*standardvelocity));        			        			        			       			        			
         		}
         		else if (itemmagy<0) {
-        			v.setX(bestPosition.getX()+((itemmagx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()-((itemmagy/100)*standardvelocity));        			        			       			
+        			v.setX(bestPosition.getX()+((itemmagx/5)*standardvelocity));
+        			v.setY(bestPosition.getY()-((itemmagy/5)*standardvelocity));        			        			       			
         		}
         		else if (itemmagy==0) {
-        			v.setX(bestPosition.getX()+((itemmagx/100)*standardvelocity));
+        			v.setX(bestPosition.getX()+((itemmagx/5)*standardvelocity));
         			v.setY(bestPosition.getY());		
         		}
         		
@@ -218,17 +218,17 @@ public class SwarmNew {
         	else if (itemmagx<0) {
         		if (itemmagy>0)
         		{
-        			v.setX(bestPosition.getX()-((itemmagx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()+((itemmagy/100)*standardvelocity));
+        			v.setX(bestPosition.getX()-((itemmagx/5)*standardvelocity));
+        			v.setY(bestPosition.getY()+((itemmagy/5)*standardvelocity));
         		
         		}
         		else if (itemmagy<0) {
-        			v.setX(bestPosition.getX()-((itemmagx/100)*standardvelocity));
-        			v.setY(bestPosition.getY()-((itemmagy/100)*standardvelocity));
+        			v.setX(bestPosition.getX()-((itemmagx/5)*standardvelocity));
+        			v.setY(bestPosition.getY()-((itemmagy/5)*standardvelocity));
         		
         		}
         		else if (itemmagy==0) {
-        			v.setX(bestPosition.getX()-((itemmagx/100)*standardvelocity));
+        			v.setX(bestPosition.getX()-((itemmagx/5)*standardvelocity));
         			v.setY(bestPosition.getY());
         		
         		}        			
@@ -237,12 +237,12 @@ public class SwarmNew {
         		if (itemmagy>0)
         		{
         			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY()+((itemmagy/100)*standardvelocity));
+        			v.setY(bestPosition.getY()+((itemmagy/5)*standardvelocity));
         		
         		}
         		else if (itemmagy<0) {
         			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY()-((itemmagy/100)*standardvelocity));
+        			v.setY(bestPosition.getY()-((itemmagy/5)*standardvelocity));
         		
         		}
         		else if (itemmagy==0) {
