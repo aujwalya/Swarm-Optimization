@@ -2,12 +2,22 @@ package com.accenture.swarmPSO.bean;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class GlobalSolutionNew {	
 	
 	private Vector globalBestPosition;
 	private Vector globalBestOption;
 	List<ParticleResponseNew> particles;
+	private double predictability;
 	
+	public double getPredictability() {
+		return predictability;
+	}
+	public void setPredictability(double predictability) {
+		this.predictability = predictability;
+	}
 	public Vector getGlobalBestPosition() {
 		return globalBestPosition;
 	}
@@ -29,8 +39,9 @@ public class GlobalSolutionNew {
 	@Override
 	public String toString() {
 		return "GlobalSolutionNew [globalBestPosition=" + globalBestPosition + ", globalBestOption=" + globalBestOption
-				+ ", particles=" + particles + "]";
+				+ ", particles=" + particles + ", predictability=" + predictability + "]";
 	}
+	
 	
 	
 }

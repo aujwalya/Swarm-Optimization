@@ -30,20 +30,30 @@ public class SwarmService implements ISwarmService{
 	@Autowired
 	IParticleSwarmRepository particleSwarmDAO;
 	
-	GlobalSolution globalSolution = new GlobalSolution();
-	GlobalSolutionNew globalSolutionNew = new GlobalSolutionNew();
+	@Autowired
+	GlobalSolution globalSolution;
 	
-	private void updateGlobalBestOption(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolution globalSolution) {
+	@Autowired
+	GlobalSolutionNew globalSolutionNew;
+	
+	//This method returns the second best option to check the predictability of the first Best option compared with second best option
+	private Vector updateGlobalBestOption(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolution globalSolution) {
 		double bestOptionDistance = 0.0;
+		double secondBestDistance;
+		Vector vector = new Vector();
 		for(Vector option:optionVertices) {
 			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
 					+ Math.pow(option.getY() - globalBestPosition.getY(), 2));
 			if((currentOptionDistance < bestOptionDistance) || bestOptionDistance == 0.0) {
+				secondBestDistance = bestOptionDistance;
 				bestOptionDistance = currentOptionDistance;
+				if(secondBestDistance != 0.0)
+					vector = globalSolution.getGlobalBestOption();
 				globalSolution.setGlobalBestOption(option);
 			}
 				
 		}
+		return vector;
 	}
 
 	@Override
@@ -93,7 +103,10 @@ public class SwarmService implements ISwarmService{
 		//Creating Global Solution to return it to UI
 		globalSolution.setParticles(calculatedParticleList);
 		globalSolution.setGlobalBestPosition(roundOffVector(swarm.getBestPosition()));
-		updateGlobalBestOption(swarm.getOptionVertices(), swarm.getBestPosition(), globalSolution);
+		Vector secondBestOption = updateGlobalBestOption(swarm.getOptionVertices(), swarm.getBestPosition(), globalSolution);
+		
+		double predictability = calculatePredictability(globalSolution.getGlobalBestOption(), secondBestOption, swarm.getBestPosition());
+		globalSolution.setPredictability(predictability);
 		
 		return globalSolution;
 	} 
@@ -160,21 +173,41 @@ public class SwarmService implements ISwarmService{
 		System.out.println("Best Position Y" + swarmnew.getBestPosition().getY());
 		
 		globalSolutionNew.setGlobalBestPosition(roundOffVector(swarmnew.getBestPosition()));
-		updateGlobalBestOption(swarmnew.getOptionVertices(), swarmnew.getBestPosition(), globalSolutionNew);
+		Vector secondBestOption = updateGlobalBestOptionNew(swarmnew.getOptionVertices(), swarmnew.getBestPosition(), globalSolutionNew);
+		
+		double predictability = calculatePredictability(globalSolutionNew.getGlobalBestOption(), secondBestOption, swarmnew.getBestPosition());
+		globalSolutionNew.setPredictability(predictability);
 		
 		return globalSolutionNew;
 	}
 	
-	private void updateGlobalBestOption(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolutionNew globalSolutionNew) {
+	//This method returns the second best option to check the predictability of the first Best option compared with second best option
+	private Vector updateGlobalBestOptionNew(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolutionNew globalSolutionNew) {
 		double bestOptionDistance = 0.0;
+		double secondBestDistance;
+		Vector vector = new Vector();
 		for(Vector option:optionVertices) {
 			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
 					+ Math.pow(option.getY() - globalBestPosition.getY(), 2));
 			if((currentOptionDistance < bestOptionDistance) || bestOptionDistance == 0.0) {
+				secondBestDistance = bestOptionDistance;
 				bestOptionDistance = currentOptionDistance;
+				if(secondBestDistance != 0.0)
+					vector = globalSolutionNew.getGlobalBestOption();
 				globalSolutionNew.setGlobalBestOption(option);
-			}				
+			}
 		}
+		return vector;
+	}
+	
+	private double calculatePredictability(Vector bestOption, Vector secondBestOption, Vector globalBestPosition) {
+		double bestOptionDistance = Math.sqrt(Math.pow(bestOption.getY() - globalBestPosition.getY(), 2) 
+				+ Math.pow(bestOption.getY() - globalBestPosition.getY(), 2));
+		double secondBestOptionDistance = Math.sqrt(Math.pow(secondBestOption.getY() - globalBestPosition.getY(), 2) 
+				+ Math.pow(secondBestOption.getY() - globalBestPosition.getY(), 2));
+		
+		double predictability = (secondBestOptionDistance/(bestOptionDistance+secondBestOptionDistance))*100;
+		return BigDecimal.valueOf(predictability).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
 }
