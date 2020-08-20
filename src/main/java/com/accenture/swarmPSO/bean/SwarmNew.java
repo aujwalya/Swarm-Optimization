@@ -301,7 +301,7 @@ public class SwarmNew {
     		particleCoordinates.setY(y);
     	}
     	else {
-    		double effectiveDistance = (50.0 + ((Math.abs(magx)+Math.abs(magy))/50) + standardVelocity);
+    		double effectiveDistance = (35.0 + ((Math.abs(magx)+Math.abs(magy))/50) + standardVelocity);
     		double pointDistance = effectiveDistance/d;
     		double x = (1-pointDistance)*particlePosition.getX() + pointDistance * globalPosition.getX();
     		double y = (1-pointDistance)*particlePosition.getY() + pointDistance * globalPosition.getY();
