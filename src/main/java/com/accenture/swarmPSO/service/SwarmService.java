@@ -47,7 +47,7 @@ public class SwarmService implements ISwarmService{
 		Vector vector = new Vector();
 		for(Vector option:optionVertices) {
 			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
-					+ Math.pow(option.getY() - globalBestPosition.getY(), 2));
+					+ Math.pow(option.getX() - globalBestPosition.getX(), 2));
 			if((currentOptionDistance < bestOptionDistance) || bestOptionDistance == 0.0) {
 				secondBestDistance = bestOptionDistance;
 				bestOptionDistance = currentOptionDistance;
@@ -192,7 +192,7 @@ public class SwarmService implements ISwarmService{
 		Vector vector = new Vector();
 		for(Vector option:optionVertices) {
 			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
-					+ Math.pow(option.getY() - globalBestPosition.getY(), 2));
+					+ Math.pow(option.getX() - globalBestPosition.getX(), 2));
 			if((currentOptionDistance < bestOptionDistance) || bestOptionDistance == 0.0) {
 				secondBestDistance = bestOptionDistance;
 				bestOptionDistance = currentOptionDistance;
@@ -206,9 +206,9 @@ public class SwarmService implements ISwarmService{
 	
 	private double calculatePredictability(Vector bestOption, Vector secondBestOption, Vector globalBestPosition) {
 		double bestOptionDistance = Math.sqrt(Math.pow(bestOption.getY() - globalBestPosition.getY(), 2) 
-				+ Math.pow(bestOption.getY() - globalBestPosition.getY(), 2));
+				+ Math.pow(bestOption.getX() - globalBestPosition.getX(), 2));
 		double secondBestOptionDistance = Math.sqrt(Math.pow(secondBestOption.getY() - globalBestPosition.getY(), 2) 
-				+ Math.pow(secondBestOption.getY() - globalBestPosition.getY(), 2));
+				+ Math.pow(secondBestOption.getX() - globalBestPosition.getX(), 2));
 		
 		double predictability = (secondBestOptionDistance/(bestOptionDistance+secondBestOptionDistance))*100;
 		return BigDecimal.valueOf(predictability).setScale(2, RoundingMode.HALF_UP).doubleValue();
