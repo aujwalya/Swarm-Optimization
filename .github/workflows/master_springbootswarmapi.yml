@@ -15,15 +15,15 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
-    - name: Set up Java version
+    - name: Setting up Java version for Swarm API Deployment
       uses: actions/setup-java@v1
       with:
         java-version: '8'
 
-    - name: Build with Maven
+    - name: Building and Compiling Swarm Code
       run: mvn clean install
 
-    - name: Deploy to Azure Web App
+    - name: Deploying Swarm Code to Azure Web App
       uses: azure/webapps-deploy@v1
       with:
         app-name: 'springbootswarmapi'
