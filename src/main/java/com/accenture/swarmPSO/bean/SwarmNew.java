@@ -114,6 +114,7 @@ public class SwarmNew {
     	double magx;
     	double magy;
     	Vector GlobalResultant;
+    	double z = 0.2;
     		
     	
     	GlobalResultant = new Vector(0, 0);
@@ -254,7 +255,10 @@ public class SwarmNew {
         	}
         	
         	//item.setPosition(v);
-        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, itemmagx, itemmagy, standardvelocity);
+        	//Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, itemmagx, itemmagy, standardvelocity);
+        	//item.setPosition(tempCurrentPosition);
+        	
+        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, z);
         	item.setPosition(tempCurrentPosition);
         	
         	System.out.println("Particle Id:" + item.getParticleId());
@@ -272,7 +276,7 @@ public class SwarmNew {
     //globalPosition  --> Global Puck position Coordinates
     private Vector calculateParticleCurrentPosition(Vector particlePosition, Vector globalPosition) {
     	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
-				+ Math.pow(particlePosition.getY() - globalPosition.getY(), 2));
+				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
     	Vector particleCoordinates = particlePosition.clone();
     	double y = Math.abs(particlePosition.getY() - globalPosition.getY());
     	double x = Math.abs(particlePosition.getX() - globalPosition.getX());
@@ -290,26 +294,46 @@ public class SwarmNew {
     //2nd Approach to find the particles current Position
     private Vector calculateParticleCurrentPosition(Vector particlePosition, Vector globalPosition, double magx, double magy, double standardVelocity) {
     	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
-				+ Math.pow(particlePosition.getY() - globalPosition.getY(), 2));
+				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
     	Vector particleCoordinates = new Vector();
     	if(d<=50.0) {
     		double effectiveDistance = (50.0 + ((Math.abs(magx)+Math.abs(magy))/50) + standardVelocity);
-    		double pointDistance = effectiveDistance/d;
-    		double x = (1-pointDistance)*globalPosition.getX() + pointDistance * particlePosition.getX();
-    		double y = (1-pointDistance)*globalPosition.getY() + pointDistance * particlePosition.getY();
-    		particleCoordinates.setX(x);
-    		particleCoordinates.setY(y);
-    	}
-    	else {
-    		double effectiveDistance = (35.0 + ((Math.abs(magx)+Math.abs(magy))/50) + standardVelocity);
     		double pointDistance = effectiveDistance/d;
     		double x = (1-pointDistance)*particlePosition.getX() + pointDistance * globalPosition.getX();
     		double y = (1-pointDistance)*particlePosition.getY() + pointDistance * globalPosition.getY();
     		particleCoordinates.setX(x);
     		particleCoordinates.setY(y);
     	}
+    	else {
+    		double effectiveDistance = (35.0 + ((Math.abs(magx)+Math.abs(magy))/50) + standardVelocity);
+    		double pointDistance = effectiveDistance/d;
+    		double x = (1-pointDistance)*globalPosition.getX() + pointDistance * particlePosition.getX();
+    		double y = (1-pointDistance)*globalPosition.getY() + pointDistance * particlePosition.getY();
+    		particleCoordinates.setX(x);
+    		particleCoordinates.setY(y);
+    	}
     	return particleCoordinates;
     }
+    
+    //Method to calculate the particles Current Postion to return it to UI
+    private Vector calculateParticleCurrentPosition(Vector particlePosition, Vector globalPosition, double z) {
+    	Vector vector = new Vector();
+    	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
+				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
+    	
+    	double m = z*d;
+    	double n = d-m;
+    	
+    	double x = ((m*globalPosition.getX()) + (n*particlePosition.getX()))/d;
+    	double y = ((m*globalPosition.getY()) + (n*particlePosition.getY()))/d;
+    		
+    	vector.setX(x);
+    	vector.setY(y);
+    	
+    	return vector;
+    }
+    
+    
 
     /**
      * Create a set of particles, each with random starting positions.
