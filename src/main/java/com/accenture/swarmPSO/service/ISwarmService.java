@@ -6,6 +6,7 @@ import com.accenture.swarmPSO.bean.GlobalSolution;
 import com.accenture.swarmPSO.bean.GlobalSolutionNew;
 import com.accenture.swarmPSO.bean.Particle;
 import com.accenture.swarmPSO.bean.Swarm;
+import com.accenture.swarmPSO.bean.SwarmMagnitude;
 import com.accenture.swarmPSO.bean.SwarmNew;
 
 public interface ISwarmService {
@@ -16,4 +17,9 @@ public interface ISwarmService {
 	public SwarmNew fetchLoadedSwarmNewData(int roomId);
 	public GlobalSolution calculateGlobalBestSolution(List<Particle> particles, int roomId);
 	public GlobalSolutionNew calculateGlobalBestSolutionNew(List<Particle> particles, int roomId);
+	
+	//3rd Approach
+	public SwarmMagnitude fetchLoadedSwarmDataMagnitude(int roomId);
+	public void loadSwarmDataMagnitude(SwarmMagnitude swarmMagnitude);
+	public GlobalSolutionNew calculateGlobalBestSolutionMagnitude(List<Particle> particles, int roomId);
 }

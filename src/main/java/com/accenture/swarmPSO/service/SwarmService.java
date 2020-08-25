@@ -14,6 +14,7 @@ import com.accenture.swarmPSO.bean.Particle;
 import com.accenture.swarmPSO.bean.ParticleResponse;
 import com.accenture.swarmPSO.bean.ParticleResponseNew;
 import com.accenture.swarmPSO.bean.Swarm;
+import com.accenture.swarmPSO.bean.SwarmMagnitude;
 import com.accenture.swarmPSO.bean.SwarmNew;
 import com.accenture.swarmPSO.bean.Vector;
 import com.accenture.swarmPSO.repository.IParticleSwarmRepository;
@@ -26,6 +27,9 @@ public class SwarmService implements ISwarmService{
 	
 	@Autowired
 	SwarmNew swarmNewServices;
+	
+	@Autowired
+	SwarmMagnitude swarmMagnitudeServices;
 	
 	@Autowired
 	IParticleSwarmRepository particleSwarmDAO;
@@ -120,9 +124,9 @@ public class SwarmService implements ISwarmService{
 	}
 	
 	@Override
-	public void loadSwarmNewData(SwarmNew swarm) {
-		swarmNewServices.initialize(swarm.getParticles(), swarm);
-		particleSwarmDAO.loadSwarmNewData(swarm);	
+	public void loadSwarmNewData(SwarmNew swarmNew) {
+		swarmNewServices.initialize(swarmNew.getParticles(), swarmNew);
+		particleSwarmDAO.loadSwarmNewData(swarmNew);	
 	}
 
 	public SwarmNew fetchLoadedSwarmNewData(int roomId) {
@@ -208,6 +212,70 @@ public class SwarmService implements ISwarmService{
 		
 		double predictability = (secondBestOptionDistance/(bestOptionDistance+secondBestOptionDistance))*100;
 		return BigDecimal.valueOf(predictability).setScale(2, RoundingMode.HALF_UP).doubleValue();
+	}
+	
+	@Override
+	public SwarmMagnitude fetchLoadedSwarmDataMagnitude(int roomId) {
+		return particleSwarmDAO.fetchLoadedSwarmDataMagnitude(roomId);
+	}
+
+	@Override
+	public void loadSwarmDataMagnitude(SwarmMagnitude swarmMagnitude) {
+		swarmMagnitude.initialize(swarmMagnitude.getParticles(), swarmMagnitude);
+		particleSwarmDAO.loadSwarmDataMagnitude(swarmMagnitude);
+		
+	}
+
+	@Override
+	public GlobalSolutionNew calculateGlobalBestSolutionMagnitude(List<Particle> particles, int roomId) {
+		SwarmMagnitude swarmMagnitude = particleSwarmDAO.fetchLoadedSwarmDataMagnitude(roomId);
+		if(swarmMagnitude == null)
+			return new GlobalSolutionNew();
+		
+		List<Particle> storedParticlesData = swarmMagnitude.getParticles();
+		
+		//Update current Position of stored particle data with UI posted data
+		particles.stream().forEach(uiParticleItem ->
+			storedParticlesData.stream().filter(storedParticleItem -> storedParticleItem.getParticleId().equalsIgnoreCase(uiParticleItem.getParticleId()))
+					.forEach(storedParticleItem -> storedParticleItem.setPosition(uiParticleItem.getPosition())));			
+			
+		//Calculate global Best with PSO Algorithm
+		swarmMagnitudeServices.onCalculate(storedParticlesData, swarmMagnitude);
+		
+		//Set updated particles data for API end caching 
+		//which will be needed for next time calculation
+		swarmMagnitude.setParticles(storedParticlesData);
+		
+		//Store the updated Swarm data at API end in Java cache
+		particleSwarmDAO.updateSwarmDataAfterCalculationMagnitude(swarmMagnitude, roomId);
+		
+		//List of particles current position to return to UI
+		List<ParticleResponseNew> calculatedParticleList = new ArrayList<>();
+		storedParticlesData.stream().forEach(item -> {
+			ParticleResponseNew calculatedParticle = new ParticleResponseNew(); 
+			calculatedParticle.setParticleId(item.getParticleId());
+			calculatedParticle.setPosition(roundOffVector(item.getPosition()));
+			
+			System.out.println("Particle Id" + item.getParticleId());
+			System.out.println("Particle Id X" + item.getPosition().getX() + "--" +calculatedParticle.getPosition().getX()  );
+			System.out.println("Particle Id Y" + item.getPosition().getY() + "--" +calculatedParticle.getPosition().getY()  );
+			
+			calculatedParticleList.add(calculatedParticle);
+		});
+		
+		//Creating Global Solution to return it to UI
+		globalSolutionNew.setParticles(calculatedParticleList);
+		
+		System.out.println("Best Position X" + swarmMagnitude.getBestPosition().getX());
+		System.out.println("Best Position Y" + swarmMagnitude.getBestPosition().getY());
+		
+		globalSolutionNew.setGlobalBestPosition(roundOffVector(swarmMagnitude.getBestPosition()));
+		Vector secondBestOption = updateGlobalBestOptionNew(swarmMagnitude.getOptionVertices(), swarmMagnitude.getBestPosition(), globalSolutionNew);
+		
+		double predictability = calculatePredictability(globalSolutionNew.getGlobalBestOption(), secondBestOption, swarmMagnitude.getBestPosition());
+		globalSolutionNew.setPredictability(predictability);
+		
+		return globalSolutionNew;
 	}
 
 }

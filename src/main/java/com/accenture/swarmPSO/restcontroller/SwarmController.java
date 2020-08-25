@@ -13,6 +13,7 @@ import com.accenture.swarmPSO.bean.GlobalSolution;
 import com.accenture.swarmPSO.bean.GlobalSolutionNew;
 import com.accenture.swarmPSO.bean.Particle;
 import com.accenture.swarmPSO.bean.Swarm;
+import com.accenture.swarmPSO.bean.SwarmMagnitude;
 import com.accenture.swarmPSO.bean.SwarmNew;
 import com.accenture.swarmPSO.service.ISwarmService;
 
@@ -59,6 +60,26 @@ public class SwarmController {
 	@RequestMapping(value="/calculateGlobalBestSolutionNew",method= {RequestMethod.GET, RequestMethod.POST},produces="application/json")
 	public GlobalSolutionNew calculateGlobalBestSolutionNew(@RequestBody SwarmNew swarm) {
 		return swarmService.calculateGlobalBestSolutionNew(swarm.getParticles(), swarm.getRoomId());
+	}
+	
+	//3rd Approach
+	
+	//1st API
+	@RequestMapping(value="/loadSwarmDataMagnitude",method= {RequestMethod.GET, RequestMethod.POST},produces="application/json")
+	public void loadSwarmDataMagnitude(@RequestBody SwarmMagnitude swarmMagnitude) {
+		swarmService.loadSwarmDataMagnitude(swarmMagnitude);
+	}
+		
+	@RequestMapping(value="fetchLoadedSwarmDataMagnitude/{roomId}",method= {RequestMethod.GET},produces="application/json")
+	public SwarmMagnitude fetchLoadedSwarDataMagnitude(@PathVariable int roomId) {
+		return swarmService.fetchLoadedSwarmDataMagnitude(roomId);
+	}
+		
+		
+	//2nd API
+	@RequestMapping(value="/calculateGlobalBestSolutionMagnitude",method= {RequestMethod.GET, RequestMethod.POST},produces="application/json")
+	public GlobalSolutionNew calculateGlobalBestSolutionMagnitude(@RequestBody SwarmNew swarm) {
+		return swarmService.calculateGlobalBestSolutionMagnitude(swarm.getParticles(), swarm.getRoomId());
 	}
 	
 }
