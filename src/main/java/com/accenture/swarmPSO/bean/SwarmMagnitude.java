@@ -147,8 +147,8 @@ public class SwarmMagnitude {
     		double pointDistance = effectiveDistance/d;
     		double x = (1-pointDistance)*globalPosition.getX() + pointDistance * particlePosition.getX();
     		double y = (1-pointDistance)*globalPosition.getY() + pointDistance * particlePosition.getY();
-    		globalCoordinates.setX(x);
-    		globalCoordinates.setY(y);
+    		globalCoordinates.setX(Math.abs(x));
+    		globalCoordinates.setY(Math.abs(y));
     		
     	return globalCoordinates;
     }
@@ -163,16 +163,16 @@ public class SwarmMagnitude {
     		double pointDistance = effectiveDistance/d;
     		double x = (1-pointDistance)*globalPosition.getX() + pointDistance * particlePosition.getX();
     		double y = (1-pointDistance)*globalPosition.getY() + pointDistance * particlePosition.getY();
-    		particleCoordinates.setX(x);
-    		particleCoordinates.setY(y);
+    		particleCoordinates.setX(Math.abs(x));
+    		particleCoordinates.setY(Math.abs(y));
     	}
     	else {
     		double effectiveDistance = (15.0 + d/numOfParticles);
     		double pointDistance = effectiveDistance/d;
     		double x = (1-pointDistance)*particlePosition.getX() + pointDistance * globalPosition.getX();
     		double y = (1-pointDistance)*particlePosition.getY() + pointDistance * globalPosition.getY();
-    		particleCoordinates.setX(x);
-    		particleCoordinates.setY(y);
+    		particleCoordinates.setX(Math.abs(x));
+    		particleCoordinates.setY(Math.abs(y));
     	}
     	return particleCoordinates;
     }
