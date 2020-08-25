@@ -141,7 +141,7 @@ public class SwarmMagnitude {
     private Vector calculateGlobalBestPosition(Vector particlePosition, Vector globalPosition, int numberOfParticles) {
     	Vector globalCoordinates = new Vector();
     	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
-				+ Math.pow(particlePosition.getY() - globalPosition.getY(), 2));
+				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
     	double effectiveDistance = d/numberOfParticles;
 
     		double pointDistance = effectiveDistance/d;
@@ -156,7 +156,7 @@ public class SwarmMagnitude {
     //Find the particles current Position
     private Vector calculateParticleCurrentPosition(Vector particlePosition, Vector globalPosition, int numOfParticles) {
     	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
-				+ Math.pow(particlePosition.getY() - globalPosition.getY(), 2));
+				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
     	Vector particleCoordinates = new Vector();
     	if(d<=50.0) {
     		double effectiveDistance = (50.0 + d/numOfParticles);

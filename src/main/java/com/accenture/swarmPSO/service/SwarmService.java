@@ -43,8 +43,8 @@ public class SwarmService implements ISwarmService{
 	//This method returns the second best option to check the predictability of the first Best option compared with second best option
 	private Vector updateGlobalBestOption(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolution globalSolution) {
 		double bestOptionDistance = 0.0;
-		double secondBestDistance;
-		Vector vector = new Vector();
+		double secondBestDistance = 0.0;
+		Vector secondBestOption = new Vector();
 		for(Vector option:optionVertices) {
 			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
 					+ Math.pow(option.getX() - globalBestPosition.getX(), 2));
@@ -52,12 +52,14 @@ public class SwarmService implements ISwarmService{
 				secondBestDistance = bestOptionDistance;
 				bestOptionDistance = currentOptionDistance;
 				if(secondBestDistance != 0.0)
-					vector = globalSolution.getGlobalBestOption();
+					secondBestOption = globalSolution.getGlobalBestOption();
 				globalSolution.setGlobalBestOption(option);
 			}
+			if(currentOptionDistance < secondBestDistance && currentOptionDistance > bestOptionDistance)
+				secondBestOption = option;
 				
 		}
-		return vector;
+		return secondBestOption;
 	}
 
 	@Override
@@ -188,8 +190,8 @@ public class SwarmService implements ISwarmService{
 	//This method returns the second best option to check the predictability of the first Best option compared with second best option
 	private Vector updateGlobalBestOptionNew(List<Vector> optionVertices, Vector globalBestPosition, GlobalSolutionNew globalSolutionNew) {
 		double bestOptionDistance = 0.0;
-		double secondBestDistance;
-		Vector vector = new Vector();
+		double secondBestDistance = 0.0;
+		Vector secondBestOption = new Vector();
 		for(Vector option:optionVertices) {
 			double currentOptionDistance = Math.sqrt(Math.pow(option.getY() - globalBestPosition.getY(), 2) 
 					+ Math.pow(option.getX() - globalBestPosition.getX(), 2));
@@ -197,11 +199,13 @@ public class SwarmService implements ISwarmService{
 				secondBestDistance = bestOptionDistance;
 				bestOptionDistance = currentOptionDistance;
 				if(secondBestDistance != 0.0)
-					vector = globalSolutionNew.getGlobalBestOption();
+					secondBestOption = globalSolutionNew.getGlobalBestOption();
 				globalSolutionNew.setGlobalBestOption(option);
 			}
+			if(currentOptionDistance < secondBestDistance && currentOptionDistance > bestOptionDistance)
+				secondBestOption = option;
 		}
-		return vector;
+		return secondBestOption;
 	}
 	
 	private double calculatePredictability(Vector bestOption, Vector secondBestOption, Vector globalBestPosition) {
