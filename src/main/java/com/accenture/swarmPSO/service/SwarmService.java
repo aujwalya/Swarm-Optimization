@@ -157,7 +157,7 @@ public class SwarmService implements ISwarmService{
 		storedParticlesData.stream().forEach(item -> {
 			ParticleResponseNew calculatedParticle = new ParticleResponseNew(); 
 			calculatedParticle.setParticleId(item.getParticleId());
-			calculatedParticle.setPosition(item.getPosition());
+			calculatedParticle.setPosition(roundOffVector(item.getPosition()));
 			
 			System.out.println("Particle Id" + item.getParticleId());
 			System.out.println("Particle Id X" + item.getPosition().getX() + "--" +calculatedParticle.getPosition().getX()  );
