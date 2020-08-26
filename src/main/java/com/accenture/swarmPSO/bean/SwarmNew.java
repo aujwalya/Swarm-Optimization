@@ -115,7 +115,7 @@ public class SwarmNew {
     	double magy;
     	Vector GlobalResultant;
     	//double z = 0.2;
-    	double minDistance = 40.0;
+    	//double minDistance = 40.0;
     		
     	
     	GlobalResultant = new Vector(0, 0);
@@ -194,79 +194,98 @@ public class SwarmNew {
         
         //update particle position
         
-        
-    	particles.stream().forEach(item -> {
+//    	particles.stream().forEach(item -> {
+//        	
+//    		Vector v = new Vector (0,0);		
+//        	double itemmagx = item.getPosition().getX() - bestPosition.getX();
+//        	double itemmagy = item.getPosition().getY() - bestPosition.getY();
+//        	
+//        	if (itemmagx>0) {
+//        		if (itemmagy>0)
+//        		{
+//        			v.setX(bestPosition.getX()+((itemmagx/10)*standardvelocity));
+//        			v.setY(bestPosition.getY()+((itemmagy/10)*standardvelocity));        			        			        			       			        			
+//        		}
+//        		else if (itemmagy<0) {
+//        			v.setX(bestPosition.getX()+((itemmagx/10)*standardvelocity));
+//        			v.setY(bestPosition.getY()-((itemmagy/10)*standardvelocity));        			        			       			
+//        		}
+//        		else if (itemmagy==0) {
+//        			v.setX(bestPosition.getX()+((itemmagx/10)*standardvelocity));
+//        			v.setY(bestPosition.getY());		
+//        		}
+//        		
+//        	}
+//        	else if (itemmagx<0) {
+//        		if (itemmagy>0)
+//        		{
+//        			v.setX(bestPosition.getX()-((itemmagx/10)*standardvelocity));
+//        			v.setY(bestPosition.getY()+((itemmagy/10)*standardvelocity));
+//        		
+//        		}
+//        		else if (itemmagy<0) {
+//        			v.setX(bestPosition.getX()-((itemmagx/10)*standardvelocity));
+//        			v.setY(bestPosition.getY()-((itemmagy/10)*standardvelocity));
+//        		
+//        		}
+//        		else if (itemmagy==0) {
+//        			v.setX(bestPosition.getX()-((itemmagx/10)*standardvelocity));
+//        			v.setY(bestPosition.getY());
+//        		
+//        		}        			
+//        	}
+//        	else if (itemmagx==0){
+//        		if (itemmagy>0)
+//        		{
+//        			v.setX(bestPosition.getX());
+//        			v.setY(bestPosition.getY()+((itemmagy/10)*standardvelocity));
+//        		
+//        		}
+//        		else if (itemmagy<0) {
+//        			v.setX(bestPosition.getX());
+//        			v.setY(bestPosition.getY()-((itemmagy/10)*standardvelocity));
+//        		
+//        		}
+//        		else if (itemmagy==0) {
+//        			v.setX(bestPosition.getX());
+//        			v.setY(bestPosition.getY());
+//        			
+//        		}        		
+//        		        		
+//        	}
+//        	
+//        	item.setPosition(v);
+//        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, itemmagx, itemmagy, standardvelocity);
+//        	item.setPosition(tempCurrentPosition);
+//        	
+//        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, minDistance);
+//        	item.setPosition(tempCurrentPosition);
+//        	
+//        	
+//        	System.out.println("Particle Id:" + item.getParticleId());
+//        	System.out.println("Upated particle position X:" + item.getPosition().getX());
+//        	System.out.println("Upated particle position Y" + item.getPosition().getY());
+//        	        	
+//        });
+    	
+    	//Calculate Particles new Position
+    	double step = ((2*Math.PI)/particles.size());
+    	double angle = 0.0;
+    	for(Particle particle: particles) {
+    		double x = Math.round(bestPosition.getX() + (40.0)*Math.cos(angle));
+        	double y = Math.round(bestPosition.getY() + (40.0)*Math.sin(angle));
+        	angle= angle + step;
+        	Vector v = new Vector (0,0);
+        	v.setX(x);
+        	v.setY(y);
         	
-    		Vector v = new Vector (0,0);		
-        	double itemmagx = item.getPosition().getX() - bestPosition.getX();
-        	double itemmagy = item.getPosition().getY() - bestPosition.getY();
+        	particle.setPosition(v);
         	
-        	if (itemmagx>0) {
-        		if (itemmagy>0)
-        		{
-        			v.setX(bestPosition.getX()+((itemmagx/10)*standardvelocity));
-        			v.setY(bestPosition.getY()+((itemmagy/10)*standardvelocity));        			        			        			       			        			
-        		}
-        		else if (itemmagy<0) {
-        			v.setX(bestPosition.getX()+((itemmagx/10)*standardvelocity));
-        			v.setY(bestPosition.getY()-((itemmagy/10)*standardvelocity));        			        			       			
-        		}
-        		else if (itemmagy==0) {
-        			v.setX(bestPosition.getX()+((itemmagx/10)*standardvelocity));
-        			v.setY(bestPosition.getY());		
-        		}
-        		
-        	}
-        	else if (itemmagx<0) {
-        		if (itemmagy>0)
-        		{
-        			v.setX(bestPosition.getX()-((itemmagx/10)*standardvelocity));
-        			v.setY(bestPosition.getY()+((itemmagy/10)*standardvelocity));
-        		
-        		}
-        		else if (itemmagy<0) {
-        			v.setX(bestPosition.getX()-((itemmagx/10)*standardvelocity));
-        			v.setY(bestPosition.getY()-((itemmagy/10)*standardvelocity));
-        		
-        		}
-        		else if (itemmagy==0) {
-        			v.setX(bestPosition.getX()-((itemmagx/10)*standardvelocity));
-        			v.setY(bestPosition.getY());
-        		
-        		}        			
-        	}
-        	else if (itemmagx==0){
-        		if (itemmagy>0)
-        		{
-        			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY()+((itemmagy/10)*standardvelocity));
-        		
-        		}
-        		else if (itemmagy<0) {
-        			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY()-((itemmagy/10)*standardvelocity));
-        		
-        		}
-        		else if (itemmagy==0) {
-        			v.setX(bestPosition.getX());
-        			v.setY(bestPosition.getY());
-        			
-        		}        		
-        		        		
-        	}
+        	System.out.println("Particle Id:" + particle.getParticleId());
+        	System.out.println("Upated particle position X:" + particle.getPosition().getX());
+        	System.out.println("Upated particle position Y" + particle.getPosition().getY());
         	
-        	//item.setPosition(v);
-        	//Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, itemmagx, itemmagy, standardvelocity);
-        	//item.setPosition(tempCurrentPosition);
-        	
-        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, minDistance);
-        	item.setPosition(tempCurrentPosition);
-        	
-        	System.out.println("Particle Id:" + item.getParticleId());
-        	System.out.println("Upated particle position X:" + item.getPosition().getX());
-        	System.out.println("Upated particle position Y" + item.getPosition().getY());
-        	        	
-        });
+    	}
         
         swarm.setParticles(particles);
         
