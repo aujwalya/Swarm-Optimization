@@ -114,7 +114,8 @@ public class SwarmNew {
     	double magx;
     	double magy;
     	Vector GlobalResultant;
-    	double z = 0.2;
+    	//double z = 0.2;
+    	double minDistance = 40.0;
     		
     	
     	GlobalResultant = new Vector(0, 0);
@@ -258,7 +259,7 @@ public class SwarmNew {
         	//Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, itemmagx, itemmagy, standardvelocity);
         	//item.setPosition(tempCurrentPosition);
         	
-        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, z);
+        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), bestPosition, minDistance);
         	item.setPosition(tempCurrentPosition);
         	
         	System.out.println("Particle Id:" + item.getParticleId());
@@ -316,19 +317,22 @@ public class SwarmNew {
     }
     
     //Method to calculate the particles Current Postion to return it to UI
-    private Vector calculateParticleCurrentPosition(Vector particlePosition, Vector globalPosition, double z) {
+    private Vector calculateParticleCurrentPosition(Vector particlePosition, Vector globalPosition, double n) {
     	Vector vector = new Vector();
     	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
 				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
     	
-    	double m = z*d;
-    	double n = d-m;
+    	if(d>40.0) {
+    		double m = d-n;
     	
-    	double x = ((m*globalPosition.getX()) + (n*particlePosition.getX()))/d;
-    	double y = ((m*globalPosition.getY()) + (n*particlePosition.getY()))/d;
+    		double x = ((m*globalPosition.getX()) + (n*particlePosition.getX()))/d;
+    		double y = ((m*globalPosition.getY()) + (n*particlePosition.getY()))/d;
     		
-    	vector.setX(x);
-    	vector.setY(y);
+    		vector.setX(x);
+    		vector.setY(y);
+    	}
+    	else
+    		vector = particlePosition.clone();
     	
     	return vector;
     }
