@@ -121,34 +121,44 @@ public class SwarmMagnitude {
         System.out.println("bestPosition X::" + bestPosition.getX());
     	System.out.println("bestPosition Y::" + bestPosition.getY());
         
-        //update particle position
-        
-        
-    	particles.stream().forEach(item -> {
-        	Vector tempCurrentPosition = calculateParticleCurrentPosition(item.getPosition(), swarmMagnitude.getBestPosition(), numOfParticles);
-        	item.setPosition(tempCurrentPosition);
+    	//Calculate Particles new Position
+    	double step = ((2*Math.PI)/particles.size());
+    	double angle = 0.0;
+    	for(Particle particle: particles) {
+    		double x = Math.round(bestPosition.getX() + (40.0)*Math.cos(angle));
+        	double y = Math.round(bestPosition.getY() + (40.0)*Math.sin(angle));
+        	angle= angle + step;
+        	Vector v = new Vector (0,0);
+        	v.setX(x);
+        	v.setY(y);
         	
-        	System.out.println("Particle Id:" + item.getParticleId());
-        	System.out.println("Upated particle position X:" + item.getPosition().getX());
-        	System.out.println("Upated particle position Y" + item.getPosition().getY());
-        	});
-        
-        swarmMagnitude.setParticles(particles);
-        
-       }
+        	particle.setPosition(v);
+        	
+        	System.out.println("Particle Id:" + particle.getParticleId());
+        	System.out.println("Upated particle position X:" + particle.getPosition().getX());
+        	System.out.println("Upated particle position Y" + particle.getPosition().getY());
+        	
+    	}
+    }
     
     //Find Global Best Position
     private Vector calculateGlobalBestPosition(Vector particlePosition, Vector globalPosition, int numberOfParticles) {
     	Vector globalCoordinates = new Vector();
     	double d = Math.sqrt(Math.pow(particlePosition.getY() - globalPosition.getY(), 2) 
 				+ Math.pow(particlePosition.getX() - globalPosition.getX(), 2));
-    	double effectiveDistance = d/numberOfParticles;
-
-    		double pointDistance = effectiveDistance/d;
-    		double x = (1-pointDistance)*globalPosition.getX() + pointDistance * particlePosition.getX();
-    		double y = (1-pointDistance)*globalPosition.getY() + pointDistance * particlePosition.getY();
+    	
+    	if(d>40.0) {
+    		double n = d/numberOfParticles;
+    		double m = d-n;
+    		
+    		double x = ((m*globalPosition.getX()) + (n*particlePosition.getX()))/d;
+    		double y = ((m*globalPosition.getY()) + (n*particlePosition.getY()))/d;
+    		
     		globalCoordinates.setX(Math.abs(x));
     		globalCoordinates.setY(Math.abs(y));
+    	}
+    	else
+    		globalCoordinates = globalPosition.clone();
     		
     	return globalCoordinates;
     }
