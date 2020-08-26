@@ -125,8 +125,8 @@ public class SwarmMagnitude {
     	double step = ((2*Math.PI)/particles.size());
     	double angle = 0.0;
     	for(Particle particle: particles) {
-    		double x = Math.round(bestPosition.getX() + (40.0)*Math.cos(angle));
-        	double y = Math.round(bestPosition.getY() + (40.0)*Math.sin(angle));
+    		double x = Math.round(swarmMagnitude.getBestPosition().getX() + (40.0)*Math.cos(angle));
+        	double y = Math.round(swarmMagnitude.getBestPosition().getY() + (40.0)*Math.sin(angle));
         	angle= angle + step;
         	Vector v = new Vector (0,0);
         	v.setX(x);
